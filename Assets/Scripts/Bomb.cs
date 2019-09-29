@@ -8,7 +8,6 @@ public class Bomb : MonoBehaviour
     public GameObject Player;
 
     public int canDeploy = 1;
-    public float explodeTime = 3.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +28,6 @@ public class Bomb : MonoBehaviour
                 ),
                 Bomba.transform.rotation
             );
-
-            Destroy(newBomb, explodeTime);
         }
 
     }

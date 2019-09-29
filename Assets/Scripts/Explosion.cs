@@ -89,25 +89,19 @@ public class Explosion : MonoBehaviour
             Destroy(exTrEnd4, 1.1f);
         }
 
+        gameObject.SetActive(false); //Deactivate bomb
         exploded = true;
+        Destroy(gameObject, .3f); //Destroy the actual bomb in 0.3 seconds, after all coroutines have finished
     }
 
-    public void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (!exploded && other.CompareTag("Explosion"))
+        if ((!exploded) && (other.gameObject.tag == "Explosion"))
         { //If not exploded yet and this bomb is hit by an explosion...
             CancelInvoke("Explode"); //Cancel the already called Explode, else the bomb might explode twice 
             Explode(); //Finally, explode!
         }
-    }
-    public void OnCollisionEnter2D(Collision2D col)
-    {
-        if (!exploded && col.collider.CompareTag("Explosion"))
-        { //If not exploded yet and this bomb is hit by an explosion...
-            CancelInvoke("Explode"); //Cancel the already called Explode, else the bomb might explode twice 
-            Explode(); //Finally, explode!
-        }
-    }
+    }  
 
     // Update is called once per frame
     void Update()
