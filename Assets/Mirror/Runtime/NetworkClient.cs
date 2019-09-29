@@ -113,7 +113,8 @@ namespace Mirror
             // create server connection to local client
             ULocalConnectionToClient connectionToClient = new ULocalConnectionToClient();
             NetworkServer.SetLocalConnection(connectionToClient);
-            connectionToClient.Send(new ConnectMessage());
+
+            localClientPacketQueue.Enqueue(MessagePacker.Pack(new ConnectMessage()));
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace Mirror
         {
             if (LogFilter.Debug) Debug.Log("Local client AddLocalPlayer " + localPlayer.gameObject.name + " conn=" + connection.connectionId);
             connection.isReady = true;
-            connection.identity = localPlayer;
+            connection.playerController = localPlayer;
             if (localPlayer != null)
             {
                 localPlayer.isClient = true;
@@ -154,14 +155,14 @@ namespace Mirror
 
             ClientScene.HandleClientDisconnect(connection);
 
-            connection?.InvokeHandler(new DisconnectMessage(), -1);
+            connection?.InvokeHandler(new DisconnectMessage());
         }
 
-        internal static void OnDataReceived(ArraySegment<byte> data, int channelId)
+        internal static void OnDataReceived(ArraySegment<byte> data)
         {
             if (connection != null)
             {
-                connection.TransportReceive(data, channelId);
+                connection.TransportReceive(data);
             }
             else Debug.LogError("Skipped Data message handling because connection is null.");
         }
@@ -177,7 +178,7 @@ namespace Mirror
                 // thus we should set the connected state before calling the handler
                 connectState = ConnectState.Connected;
                 NetworkTime.UpdateClient();
-                connection.InvokeHandler(new ConnectMessage(), -1);
+                connection.InvokeHandler(new ConnectMessage());
             }
             else Debug.LogError("Skipped Connect message handling because connection is null.");
         }
@@ -196,7 +197,7 @@ namespace Mirror
             {
                 if (isConnected)
                 {
-                    NetworkServer.localConnection.Send(new DisconnectMessage());
+                    localClientPacketQueue.Enqueue(MessagePacker.Pack(new DisconnectMessage()));
                 }
                 NetworkServer.RemoveLocalConnection();
             }
@@ -273,9 +274,7 @@ namespace Mirror
                 while (localClientPacketQueue.Count > 0)
                 {
                     byte[] packet = localClientPacketQueue.Dequeue();
-                    // TODO avoid serializing and deserializng the message
-                    // just pass it as is
-                    OnDataReceived(new ArraySegment<byte>(packet), Channels.DefaultReliable);
+                    OnDataReceived(new ArraySegment<byte>(packet));
                 }
             }
             else
@@ -352,7 +351,7 @@ namespace Mirror
             {
                 RegisterHandler<ObjectDestroyMessage>(ClientScene.OnLocalClientObjectDestroy);
                 RegisterHandler<ObjectHideMessage>(ClientScene.OnLocalClientObjectHide);
-                RegisterHandler<NetworkPongMessage>((conn, msg) => { }, false);
+                RegisterHandler<NetworkPongMessage>((conn, msg) => { });
                 RegisterHandler<SpawnPrefabMessage>(ClientScene.OnLocalClientSpawnPrefab);
                 RegisterHandler<SpawnSceneObjectMessage>(ClientScene.OnLocalClientSpawnSceneObject);
                 RegisterHandler<ObjectSpawnStartedMessage>((conn, msg) => { }); // host mode doesn't need spawning
@@ -363,7 +362,7 @@ namespace Mirror
             {
                 RegisterHandler<ObjectDestroyMessage>(ClientScene.OnObjectDestroy);
                 RegisterHandler<ObjectHideMessage>(ClientScene.OnObjectHide);
-                RegisterHandler<NetworkPongMessage>(NetworkTime.OnClientPong, false);
+                RegisterHandler<NetworkPongMessage>(NetworkTime.OnClientPong);
                 RegisterHandler<SpawnPrefabMessage>(ClientScene.OnSpawnPrefab);
                 RegisterHandler<SpawnSceneObjectMessage>(ClientScene.OnSpawnSceneObject);
                 RegisterHandler<ObjectSpawnStartedMessage>(ClientScene.OnObjectSpawnStarted);
@@ -403,15 +402,14 @@ namespace Mirror
         /// </summary>
         /// <typeparam name="T">The message type to unregister.</typeparam>
         /// <param name="handler"></param>
-        /// <param name="requireAuthentication">true if the message requires an authenticated connection</param>
-        public static void RegisterHandler<T>(Action<NetworkConnection, T> handler, bool requireAuthentication = true) where T : IMessageBase, new()
+        public static void RegisterHandler<T>(Action<NetworkConnection, T> handler) where T : IMessageBase, new()
         {
             int msgType = MessagePacker.GetId<T>();
             if (handlers.ContainsKey(msgType))
             {
                 if (LogFilter.Debug) Debug.Log("NetworkClient.RegisterHandler replacing " + handler + " - " + msgType);
             }
-            handlers[msgType] = MessagePacker.MessageHandler<T>(handler, requireAuthentication);
+            handlers[msgType] = MessagePacker.MessageHandler<T>(handler);
         }
 
         /// <summary>
@@ -452,7 +450,6 @@ namespace Mirror
             if (LogFilter.Debug) Debug.Log("Shutting down client.");
             ClientScene.Shutdown();
             connectState = ConnectState.None;
-            handlers.Clear();
         }
 
         /// <summary>

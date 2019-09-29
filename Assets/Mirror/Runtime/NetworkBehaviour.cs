@@ -22,7 +22,7 @@ namespace Mirror
     [AddComponentMenu("")]
     public class NetworkBehaviour : MonoBehaviour
     {
-        internal float lastSyncTime;
+        float lastSyncTime;
 
         // hidden because NetworkBehaviourInspector shows it only if has OnSerialize.
         /// <summary>
@@ -91,13 +91,12 @@ namespace Mirror
         public NetworkConnection connectionToClient => netIdentity.connectionToClient;
 
         protected ulong syncVarDirtyBits { get; private set; }
-        ulong syncVarHookGuard;
+        private ulong syncVarHookGuard;
 
         protected bool getSyncVarHookGuard(ulong dirtyBit)
         {
             return (syncVarHookGuard & dirtyBit) != 0UL;
         }
-
         protected void setSyncVarHookGuard(ulong dirtyBit, bool value)
         {
             if (value)
@@ -173,7 +172,7 @@ namespace Mirror
 
         #region Commands
 
-        static int GetMethodHash(Type invokeClass, string methodName)
+        private static int GetMethodHash(Type invokeClass, string methodName)
         {
             // (invokeClass + ":" + cmdName).GetStableHashCode() would cause allocations.
             // so hash1 + hash2 is better.
@@ -439,22 +438,6 @@ namespace Mirror
             }
             return false;
         }
-
-        /// <summary>
-        /// Gets the handler function for a given hash
-        /// Can be used by profilers and debuggers
-        /// </summary>
-        /// <param name="cmdHash">rpc function hash</param>
-        /// <returns>The function delegate that will handle the command</returns>
-        public static CmdDelegate GetRpcHandler(int cmdHash)
-        {
-            if (cmdHandlerDelegates.TryGetValue(cmdHash, out Invoker invoker))
-            {
-                return invoker.invokeFunction;
-            }
-            return null;
-        }
-
         #endregion
 
         #region Helpers
@@ -585,8 +568,8 @@ namespace Mirror
 
             // flush all unsynchronized changes in syncobjects
             // note: don't use List.ForEach here, this is a hot path
-            //   List.ForEach: 432b/frame
-            //   for: 231b/frame
+            // List.ForEach: 432b/frame
+            // for: 231b/frame
             for (int i = 0; i < syncObjects.Count; ++i)
             {
                 syncObjects[i].Flush();

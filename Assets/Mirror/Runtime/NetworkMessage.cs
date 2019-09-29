@@ -5,7 +5,6 @@ namespace Mirror
         public int msgType;
         public NetworkConnection conn;
         public NetworkReader reader;
-        public int channelId;
 
         public TMsg ReadMessage<TMsg>() where TMsg : IMessageBase, new()
         {

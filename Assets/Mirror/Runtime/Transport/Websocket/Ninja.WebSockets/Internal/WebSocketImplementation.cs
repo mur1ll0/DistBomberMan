@@ -65,8 +65,6 @@ namespace Ninja.WebSockets.Internal
 
         Queue<ArraySegment<byte>> _messageQueue = new Queue<ArraySegment<byte>>();
         SemaphoreSlim _sendSemaphore = new SemaphoreSlim(1, 1);
-        public WebSocketHttpContext Context { get; set; }
-
 
         internal WebSocketImplementation(Guid guid, Func<MemoryStream> recycledStreamFactory, Stream stream, TimeSpan keepAliveInterval, string secWebSocketExtensions, bool includeExceptionInCloseResponse, bool isClient, string subProtocol)
         {
@@ -103,7 +101,9 @@ namespace Ninja.WebSockets.Internal
             {
                 // the ping pong manager starts a task
                 // but we don't have to keep a reference to it
-                _ = new PingPongManager(guid, this, keepAliveInterval, _internalReadCts.Token);
+#pragma warning disable 0219
+                PingPongManager pingPongManager = new PingPongManager(guid, this, keepAliveInterval, _internalReadCts.Token);
+#pragma warning restore 0219
             }
         }
 

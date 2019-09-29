@@ -8,7 +8,7 @@ Requirements:
   Runtime .Net 4.x (Project Settings > Player > Other Settings)
 
 Documentation:
-  https://mirror-networking.com/docs/
+  https://vis2k.github.io/Mirror/
 
 Support:
   Discord: https://discordapp.com/invite/N9QVxbM

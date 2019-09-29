@@ -15,7 +15,7 @@ namespace Mirror
     [DisallowMultipleComponent]
     [AddComponentMenu("Network/NetworkAnimator")]
     [RequireComponent(typeof(NetworkIdentity))]
-    [HelpURL("https://mirror-networking.com/docs/Components/NetworkAnimator.html")]
+    [HelpURL("https://mirror-networking.com/xmldocs/articles/Components/NetworkAnimator.html")]
     public class NetworkAnimator : NetworkBehaviour
     {
         /// <summary>
@@ -237,9 +237,9 @@ namespace Mirror
             return dirtyBits;
         }
 
-        bool WriteParameters(NetworkWriter writer, bool forceAll = false)
+        bool WriteParameters(NetworkWriter writer)
         {
-            ulong dirtyBits = forceAll ? (~0ul) : NextDirtyBits();
+            ulong dirtyBits = NextDirtyBits();
             writer.WritePackedUInt64(dirtyBits);
             for (int i = 0; i < parameters.Length; i++)
             {
@@ -318,7 +318,7 @@ namespace Mirror
                         writer.WriteSingle(st.normalizedTime);
                     }
                 }
-                WriteParameters(writer, forceAll);
+                WriteParameters(writer);
                 return true;
             }
             return false;

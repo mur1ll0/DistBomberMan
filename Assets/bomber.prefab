@@ -180,7 +180,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bomba: {fileID: 9069633827331185004, guid: f94da97a77e32804a943b45400b91693, type: 3}
-  Player: {fileID: 0}
   canDeploy: 1
 --- !u!114 &6540016343052347459
 MonoBehaviour:
@@ -197,7 +196,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 3095265160
+  m_SceneId: 3540699716
 --- !u!114 &2662601070539230608
 MonoBehaviour:
   m_ObjectHideFlags: 0

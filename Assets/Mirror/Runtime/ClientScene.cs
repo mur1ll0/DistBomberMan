@@ -77,7 +77,7 @@ namespace Mirror
             localPlayer = identity;
             if (readyConnection != null)
             {
-                readyConnection.identity = identity;
+                readyConnection.playerController = identity;
             }
             else
             {
@@ -121,7 +121,7 @@ namespace Mirror
                 return false;
             }
 
-            if (readyConnection.identity != null)
+            if (readyConnection.playerController != null)
             {
                 Debug.LogError("ClientScene.AddPlayer: a PlayerController was already added. Did you call AddPlayer twice?");
                 return false;
@@ -145,13 +145,13 @@ namespace Mirror
         {
             if (LogFilter.Debug) Debug.Log("ClientScene.RemovePlayer() called with connection [" + readyConnection + "]");
 
-            if (readyConnection.identity != null)
+            if (readyConnection.playerController != null)
             {
                 readyConnection.Send(new RemovePlayerMessage());
 
-                Object.Destroy(readyConnection.identity.gameObject);
+                Object.Destroy(readyConnection.playerController.gameObject);
 
-                readyConnection.identity = null;
+                readyConnection.playerController = null;
                 localPlayer = null;
 
                 return true;
@@ -227,14 +227,8 @@ namespace Mirror
             return null;
         }
 
-        /// <summary>
-        /// Find the registered prefab for this asset id.
-        /// Useful for debuggers
-        /// </summary>
-        /// <param name="assetId">asset id of the prefab</param>
-        /// <param name="prefab">the prefab gameobject</param>
-        /// <returns>true if prefab was registered</returns>
-        public static bool GetPrefab(Guid assetId, out GameObject prefab)
+        // spawn handlers and prefabs
+        static bool GetPrefab(Guid assetId, out GameObject prefab)
         {
             prefab = null;
             return assetId != Guid.Empty &&
@@ -727,9 +721,9 @@ namespace Mirror
             if (LogFilter.Debug) Debug.Log("ClientScene.OnOwnerMessage - connectionId=" + readyConnection.connectionId + " netId: " + netId);
 
             // is there already an owner that is a different object??
-            if (readyConnection.identity != null)
+            if (readyConnection.playerController != null)
             {
-                readyConnection.identity.SetNotLocalPlayer();
+                readyConnection.playerController.SetNotLocalPlayer();
             }
 
             if (NetworkIdentity.spawned.TryGetValue(netId, out NetworkIdentity localObject) && localObject != null)

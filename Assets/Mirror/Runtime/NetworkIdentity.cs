@@ -44,7 +44,7 @@ namespace Mirror
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
     [AddComponentMenu("Network/NetworkIdentity")]
-    [HelpURL("https://mirror-networking.com/docs/Components/NetworkIdentity.html")]
+    [HelpURL("https://mirror-networking.com/xmldocs/articles/Components/NetworkIdentity.html")]
     public sealed class NetworkIdentity : MonoBehaviour
     {
         // configuration
@@ -181,14 +181,12 @@ namespace Mirror
         // (see AssignSceneID comments)
         //  suppress "Field 'NetworkIdentity.m_SceneId' is never assigned to, and will always have its default value 0"
         // when building standalone
-#pragma warning disable CS0649
+        #pragma warning disable CS0649
         [SerializeField] ulong m_SceneId;
-#pragma warning restore CS0649
+        #pragma warning restore CS0649 
 
         // keep track of all sceneIds to detect scene duplicates
         static readonly Dictionary<ulong, NetworkIdentity> sceneIds = new Dictionary<ulong, NetworkIdentity>();
-
-        public NetworkIdentity GetSceneIdenity(ulong id) => sceneIds[id];
 
         // used when adding players
         internal void SetClientOwner(NetworkConnection conn)
@@ -228,20 +226,18 @@ namespace Mirror
         public static void ResetNextNetworkId() => nextNetworkId = 1;
 
         /// <summary>
-        /// Obsolete: Host Migration was removed
+        /// The delegate type for the clientAuthorityCallback.
         /// </summary>
         /// <param name="conn">The network connection that is gaining or losing authority.</param>
         /// <param name="identity">The object whose client authority status is being changed.</param>
         /// <param name="authorityState">The new state of client authority of the object for the connection.</param>
-        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Host Migration was removed")]
         public delegate void ClientAuthorityCallback(NetworkConnection conn, NetworkIdentity identity, bool authorityState);
 
         /// <summary>
-        /// Obsolete: Host Migration was removed
+        /// A callback that can be populated to be notified when the client-authority state of objects changes.
         /// <para>Whenever an object is spawned using SpawnWithClientAuthority, or the client authority status of an object is changed with AssignClientAuthority or RemoveClientAuthority, then this callback will be invoked.</para>
         /// <para>This callback is used by the NetworkMigrationManager to distribute client authority state to peers for host migration. If the NetworkMigrationManager is not being used, this callback does not need to be populated.</para>
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Host Migration was removed")]
         public static ClientAuthorityCallback clientAuthorityCallback;
 
         // used when the player object for a connection changes
@@ -803,7 +799,7 @@ namespace Mirror
             catch (Exception e)
             {
                 // show a detailed error and let the user know what went wrong
-                Debug.LogError("OnDeserialize failed for: object=" + name + " component=" + comp.GetType() + " sceneId=" + m_SceneId.ToString("X") + " length=" + contentSize + ". Possible Reasons:\n  * Do " + comp.GetType() + "'s OnSerialize and OnDeserialize calls write the same amount of data(" + contentSize + " bytes)? \n  * Was there an exception in " + comp.GetType() + "'s OnSerialize/OnDeserialize code?\n  * Are the server and client the exact same project?\n  * Maybe this OnDeserialize call was meant for another GameObject? The sceneIds can easily get out of sync if the Hierarchy was modified only in the client OR the server. Try rebuilding both.\n\n" + e);
+                Debug.LogError("OnDeserialize failed for: object=" + name + " component=" + comp.GetType() + " sceneId=" + m_SceneId.ToString("X") + " length=" + contentSize + ". Possible Reasons:\n  * Do " + comp.GetType() + "'s OnSerialize and OnDeserialize calls write the same amount of data(" + contentSize +" bytes)? \n  * Was there an exception in " + comp.GetType() + "'s OnSerialize/OnDeserialize code?\n  * Are the server and client the exact same project?\n  * Maybe this OnDeserialize call was meant for another GameObject? The sceneIds can easily get out of sync if the Hierarchy was modified only in the client OR the server. Try rebuilding both.\n\n" + e);
             }
 
             // now the reader should be EXACTLY at 'before + size'.
@@ -1069,49 +1065,35 @@ namespace Mirror
         }
 
         /// <summary>
-        /// Obsolete: Use <see cref="RemoveClientAuthority()"/> instead
+        /// Removes ownership for an object for a client by its connection.
+        /// <para>This applies to objects that had authority set by AssignClientAuthority, or NetworkServer.SpawnWithClientAuthority. Authority cannot be removed for player objects.</para>
         /// </summary>
         /// <param name="conn">The connection of the client to remove authority for.</param>
         /// <returns>True if authority is removed.</returns>
-        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("NetworkConnection parameter is no longer needed and nothing is returned")]
         public bool RemoveClientAuthority(NetworkConnection conn)
-        {
-            RemoveClientAuthority();
-            return true;
-        }
-
-        /// <summary>
-        /// Removes ownership for an object.
-        /// <para>This applies to objects that had authority set by AssignClientAuthority, or NetworkServer.SpawnWithClientAuthority.</para>
-        /// <para>Authority cannot be removed for player objects.</para>
-        /// </summary>
-        public void RemoveClientAuthority()
         {
             if (!isServer)
             {
                 Debug.LogError("RemoveClientAuthority can only be call on the server for spawned objects.");
-                return;
+                return false;
             }
 
             if (connectionToClient != null)
             {
                 Debug.LogError("RemoveClientAuthority cannot remove authority for a player object");
-                return;
+                return false;
             }
 
-            if (clientAuthorityOwner != null)
+            if (clientAuthorityOwner == null)
             {
-                // send msg to that client
-                ClientAuthorityMessage msg = new ClientAuthorityMessage
-                {
-                    netId = netId,
-                    authority = false
-                };
+                Debug.LogError("RemoveClientAuthority for " + gameObject + " has no clientAuthority owner.");
+                return false;
+            }
 
-                clientAuthorityOwner.Send(msg);
-#pragma warning disable CS0618 // Type or member is obsolete
-                clientAuthorityCallback?.Invoke(clientAuthorityOwner, this, false);
-#pragma warning restore CS0618 // Type or member is obsolete
+            if (clientAuthorityOwner != conn)
+            {
+                Debug.LogError("RemoveClientAuthority for " + gameObject + " has different owner.");
+                return false;
             }
 
             clientAuthorityOwner.RemoveOwnedObject(this);
@@ -1119,6 +1101,17 @@ namespace Mirror
 
             // server now has authority (this is only called on server)
             ForceAuthority(true);
+
+            // send msg to that client
+            ClientAuthorityMessage msg = new ClientAuthorityMessage
+            {
+                netId = netId,
+                authority = false
+            };
+            conn.Send(msg);
+
+            clientAuthorityCallback?.Invoke(conn, this, false);
+            return true;
         }
 
         /// <summary>
@@ -1167,9 +1160,7 @@ namespace Mirror
             };
             conn.Send(msg);
 
-#pragma warning disable CS0618 // Type or member is obsolete
             clientAuthorityCallback?.Invoke(conn, this, true);
-#pragma warning restore CS0618 // Type or member is obsolete
             return true;
         }
 
@@ -1239,44 +1230,23 @@ namespace Mirror
                         NetworkServer.SendToReady(this, varsMessage, false);
                     }
 
-                    // clear dirty bits only for the components that we serialized
-                    // DO NOT clean ALL component's dirty bits, because
-                    // components can have different syncIntervals and we don't
-                    // want to reset dirty bits for the ones that were not
-                    // synced yet.
-                    // (we serialized only the IsDirty() components, or all of
-                    //  them if initialState. clearing the dirty ones is enough.)
-                    ClearDirtyComponentsDirtyBits();
+                    // only clear bits if we sent something
+                    ClearDirtyBits();
                 }
                 NetworkWriterPool.Recycle(ownerWriter);
                 NetworkWriterPool.Recycle(observersWriter);
             }
             else
             {
-                // clear all component's dirty bits
-                ClearAllComponentsDirtyBits();
+                ClearDirtyBits();
             }
         }
 
-        // clear all component's dirty bits no matter what
-        internal void ClearAllComponentsDirtyBits()
+        private void ClearDirtyBits()
         {
             foreach (NetworkBehaviour comp in NetworkBehaviours)
             {
                 comp.ClearAllDirtyBits();
-            }
-        }
-
-        // clear only dirty component's dirty bits. ignores components which
-        // may be dirty but not ready to be synced yet (because of syncInterval)
-        internal void ClearDirtyComponentsDirtyBits()
-        {
-            foreach (NetworkBehaviour comp in NetworkBehaviours)
-            {
-                if (comp.IsDirty())
-                {
-                    comp.ClearAllDirtyBits();
-                }
             }
         }
     }
