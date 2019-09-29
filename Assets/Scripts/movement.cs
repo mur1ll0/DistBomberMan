@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class movement : MonoBehaviour
 {
+    public GameObject animDie;
 
     Animator anim;
 
@@ -42,5 +43,16 @@ public class movement : MonoBehaviour
             anim.SetInteger("Direction", 3);
         }
         
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Explosion")
+        {
+            GameObject die = Instantiate(animDie, transform.position, transform.rotation);
+            Destroy(die, 0.9f);
+            gameObject.SetActive(false);
+            Destroy(gameObject, .3f);
+        }
     }
 }
