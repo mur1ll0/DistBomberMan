@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7915004995901759179}
   - component: {fileID: -9027133895287608211}
   - component: {fileID: 2983600018955707246}
+  - component: {fileID: -8493926866165543446}
   m_Layer: 0
   m_Name: explosionCenter
   m_TagString: Explosion
@@ -157,3 +158,19 @@ PolygonCollider2D:
       - {x: 0.75, y: -0.3125}
       - {x: 0.75, y: 0.25}
       - {x: 0.28125, y: 0.75}
+--- !u!114 &-8493926866165543446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7915004995901759176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 1432410873

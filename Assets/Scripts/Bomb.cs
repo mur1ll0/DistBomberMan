@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Bomb : MonoBehaviour
 {
     public GameObject Bomba;
-    public GameObject Player;
 
     public int canDeploy = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        Player = GameObject.Find("bomber");
+        
     }
 
     // Update is called once per frame
@@ -23,8 +23,8 @@ public class Bomb : MonoBehaviour
 
             GameObject newBomb = Instantiate(Bomba,
                 new Vector2(
-                    Mathf.RoundToInt(Player.transform.position.x),
-                    Mathf.RoundToInt(Player.transform.position.y)
+                    Mathf.RoundToInt(transform.position.x),
+                    Mathf.RoundToInt(transform.position.y)
                 ),
                 Bomba.transform.rotation
             );
