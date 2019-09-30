@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using Mirror;
 
-public class Bomb : MonoBehaviour
+public class Bomb : NetworkBehaviour
 {
     public GameObject Bomba;
 
@@ -18,18 +19,20 @@ public class Bomb : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canDeploy == 1)
+        if (this.isLocalPlayer)
         {
+            if (Input.GetKeyDown(KeyCode.Space) && canDeploy == 1)
+            {
 
-            GameObject newBomb = Instantiate(Bomba,
-                new Vector2(
-                    Mathf.RoundToInt(transform.position.x),
-                    Mathf.RoundToInt(transform.position.y)
-                ),
-                Bomba.transform.rotation
-            );
+                GameObject newBomb = Instantiate(Bomba,
+                    new Vector2(
+                        Mathf.RoundToInt(transform.position.x),
+                        Mathf.RoundToInt(transform.position.y)
+                    ),
+                    Bomba.transform.rotation
+                );
+            }
         }
-
     }
 
     void OnTriggerExit2D(Collider2D other)
