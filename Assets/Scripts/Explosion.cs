@@ -28,7 +28,7 @@ public class Explosion : MonoBehaviour
         Vector2 pos = transform.position;
 
         GameObject exCenter = Instantiate(explodeCenter, pos, Quaternion.identity);
-        Destroy(exCenter, 1.1f);
+        Destroy(exCenter, 0.8f);
 
         for (int i = 1; i <= BombPower; i++)
         {
@@ -36,28 +36,28 @@ public class Explosion : MonoBehaviour
             if (!hit.collider)
             {
                 GameObject exTrCent = Instantiate(explodeTrackCenter, new Vector2(pos.x + i, pos.y), Quaternion.Euler(0, 0, 0));
-                Destroy(exTrCent, 1.1f);
+                Destroy(exTrCent, 0.8f);
             }
 
             hit = Physics2D.Raycast(transform.position, Vector3.left, i, levelMask);
             if (!hit.collider)
             {
                 GameObject exTrCent2 = Instantiate(explodeTrackCenter, new Vector2(pos.x - i, pos.y), Quaternion.Euler(0, 0, 180));
-                Destroy(exTrCent2, 1.1f);
+                Destroy(exTrCent2, 0.8f);
             }
 
             hit = Physics2D.Raycast(transform.position, Vector3.up, i, levelMask);
             if (!hit.collider)
             {
                 GameObject exTrCent3 = Instantiate(explodeTrackCenter, new Vector2(pos.x, pos.y + i), Quaternion.Euler(0, 0, 90));
-                Destroy(exTrCent3, 1.1f);
+                Destroy(exTrCent3, 0.8f);
             }
 
             hit = Physics2D.Raycast(transform.position, Vector3.down, i, levelMask);
             if (!hit.collider)
             {
                 GameObject exTrCent4 = Instantiate(explodeTrackCenter, new Vector2(pos.x, pos.y - i), Quaternion.Euler(0, 0, 270));
-                Destroy(exTrCent4, 1.1f);
+                Destroy(exTrCent4, 0.8f);
             }
         }
 
@@ -65,28 +65,28 @@ public class Explosion : MonoBehaviour
         if (!hit.collider)
         {
             GameObject exTrEnd = Instantiate(explodeTrackEnd, new Vector2(pos.x + BombPower+1, pos.y), Quaternion.Euler(0, 0, 0));
-            Destroy(exTrEnd, 1.1f);
+            Destroy(exTrEnd, 0.8f);
         }
 
         hit = Physics2D.Raycast(transform.position, Vector3.left, BombPower + 1, levelMask);
         if (!hit.collider)
         {
             GameObject exTrEnd2 = Instantiate(explodeTrackEnd, new Vector2(pos.x - BombPower-1, pos.y), Quaternion.Euler(0, 0, 180));
-            Destroy(exTrEnd2, 1.1f);
+            Destroy(exTrEnd2, 0.8f);
         }
 
         hit = Physics2D.Raycast(transform.position, Vector3.up, BombPower + 1, levelMask);
         if (!hit.collider)
         {
             GameObject exTrEnd3 = Instantiate(explodeTrackEnd, new Vector2(pos.x, pos.y + BombPower+1), Quaternion.Euler(0, 0, 90));
-            Destroy(exTrEnd3, 1.1f);
+            Destroy(exTrEnd3, 0.8f);
         }
 
         hit = Physics2D.Raycast(transform.position, Vector3.down, BombPower + 1, levelMask);
         if (!hit.collider)
         {
             GameObject exTrEnd4 = Instantiate(explodeTrackEnd, new Vector2(pos.x, pos.y - BombPower-1), Quaternion.Euler(0, 0, 270));
-            Destroy(exTrEnd4, 1.1f);
+            Destroy(exTrEnd4, 0.8f);
         }
 
         gameObject.SetActive(false); //Deactivate bomb
