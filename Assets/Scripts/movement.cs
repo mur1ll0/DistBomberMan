@@ -6,14 +6,31 @@ using UnityEngine;
 public class movement : MonoBehaviour
 {
     public GameObject animDie;
+    public GameObject Bomba;
+
+    public int canDeploy = 1;
 
     Animator anim;
 
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();    
+        anim = GetComponent<Animator>();
     }
+
+
+    //Plantar Bomba
+    void DropBomb()
+    {
+        GameObject newBomb = Instantiate(Bomba,
+            new Vector2(
+                Mathf.RoundToInt(transform.position.x),
+                Mathf.RoundToInt(transform.position.y)
+            ),
+            Bomba.transform.rotation
+        );
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -42,7 +59,13 @@ public class movement : MonoBehaviour
             transform.Translate(Vector2.down * 3f * Time.deltaTime);
             anim.SetInteger("Direction", 3);
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.Space) && canDeploy == 1)
+        {
+
+            DropBomb();
+        }
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -54,5 +77,20 @@ public class movement : MonoBehaviour
             gameObject.SetActive(false);
             Destroy(gameObject, .3f);
         }
+
+        if (other.gameObject.name == "bomb(Clone)")
+        {
+            canDeploy = 0;
+        }
     }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.name == "bomb(Clone)")
+        {
+            canDeploy = 1;
+            other.isTrigger = false;
+        }
+    }
+
 }
