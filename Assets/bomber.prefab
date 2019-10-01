@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 4335079411444291094}
   - component: {fileID: 4335079411444291095}
   - component: {fileID: 4335079411444291092}
-  - component: {fileID: 4335079411444291093}
   - component: {fileID: 6540016343052347459}
   - component: {fileID: 2662601070539230608}
   m_Layer: 2
@@ -145,7 +144,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ddc8c9ee71f2ca48a666f45a5244d9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  Bomba: {fileID: 9069633827331185004, guid: f94da97a77e32804a943b45400b91693, type: 3}
   animDie: {fileID: 2694777009209206155, guid: 3894a35ead6ac70419bbbc7cad7c66c0, type: 3}
+  canDeploy: 1
 --- !u!50 &4335079411444291092
 Rigidbody2D:
   serializedVersion: 4
@@ -167,20 +170,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &4335079411444291093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4335079411444291098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c0d9c90fe25f314dbaa7c12b634f97b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Bomba: {fileID: 9069633827331185004, guid: f94da97a77e32804a943b45400b91693, type: 3}
-  canDeploy: 1
 --- !u!114 &6540016343052347459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +185,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 3540699716
+  m_SceneId: 3535316885
 --- !u!114 &2662601070539230608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,4 +200,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  compressRotation: 1
+  compressRotation: 0

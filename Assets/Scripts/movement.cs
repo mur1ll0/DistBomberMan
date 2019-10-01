@@ -7,9 +7,11 @@ using Mirror;
 
 public class movement : NetworkBehaviour
 {
+    public GameObject Bomba;
     public GameObject animDie;
-
     private Animator anim;
+
+    public int canDeploy = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +19,23 @@ public class movement : NetworkBehaviour
         anim = GetComponent<Animator>();    
     }
 
+
+    //Spawnar bomba
+    [Command]
+    void DropBomb()
+    {
+        GameObject newBomb = Instantiate(Bomba,
+            new Vector2(
+                Mathf.RoundToInt(transform.position.x),
+                Mathf.RoundToInt(transform.position.y)
+            ),
+            Bomba.transform.rotation
+        );
+    }
+
+
     // Update is called once per frame
+    [Client]
     void Update()
     {
         if (this.isLocalPlayer)
@@ -46,6 +64,12 @@ public class movement : NetworkBehaviour
                 transform.Translate(Vector2.down * 3f * Time.deltaTime);
                 anim.SetInteger("Direction", 3);
             }
+
+            if (Input.GetKeyDown(KeyCode.Space) && canDeploy == 1)
+            {
+
+                DropBomb();
+            }
         }
     }
 
@@ -58,5 +82,20 @@ public class movement : NetworkBehaviour
             gameObject.SetActive(false);
             Destroy(gameObject, .3f);
         }
+
+        if (other.gameObject.name == "bomb(Clone)")
+        {
+            canDeploy = 0;
+        }
     }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.name == "bomb(Clone)")
+        {
+            canDeploy = 1;
+            other.isTrigger = false;
+        }
+    }
+
 }

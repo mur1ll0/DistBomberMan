@@ -1,12 +1,15 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
-    - Bomb
     - DestroyBlock
     - Explosion
     - movement
     Mirror.Components.dll:
+    - Mirror.NetworkAnimator
     - Mirror.NetworkTransform
+    Mirror.Editor.dll:
+    - Mirror.NetworkBehaviourInspector
+    - Mirror.NetworkIdentityEditor
     Mirror.dll:
     - Mirror.NetworkIdentity
     - Mirror.NetworkManager
@@ -22,8 +25,10 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -63,21 +68,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9754}
     - Class: 114
-      Script: {instanceID: 9760}
-    - Class: 114
       Script: {instanceID: 9876}
     - Class: 114
       Script: {instanceID: 9878}
     - Class: 114
       Script: {instanceID: 10738}
     - Class: 114
-      Script: {instanceID: 11384}
+      Script: {instanceID: 10844}
     - Class: 114
-      Script: {instanceID: 11480}
+      Script: {instanceID: 11380}
     - Class: 114
-      Script: {instanceID: 11562}
+      Script: {instanceID: 11474}
     - Class: 114
-      Script: {instanceID: 11682}
+      Script: {instanceID: 11554}
+    - Class: 114
+      Script: {instanceID: 11674}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -123,12 +128,6 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.dll
     namespaceName: Mirror
     className: NetworkManagerHUD
-  - hash:
-      serializedVersion: 2
-      Hash: cfe70d1fd327b824120457eaf51e63b2
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Bomb
   - hash:
       serializedVersion: 2
       Hash: e7a73f5f78ba6445195ec23b74a1ce2d
@@ -201,6 +200,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
     className: TestResultRendererCallback
+  - hash:
+      serializedVersion: 2
+      Hash: 6fd2bb55b3ee5edb6040a1c5bccd0e07
+    assemblyName: Mirror.Examples.dll
+    namespaceName: Mirror.Examples.Additive
+    className: SceneLoader
   - hash:
       serializedVersion: 2
       Hash: 234235b9fb07320d11497e08a726cc56
@@ -629,7 +634,7 @@ ScriptsOnlyBuild:
     className: PlayModeRunnerCallback
   - hash:
       serializedVersion: 2
-      Hash: 1b676a1e1a516a6eb992c6974b961204
+      Hash: fea7cc642843914d07042755eb6e6eb8
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: movement
@@ -723,13 +728,7 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 6fd2bb55b3ee5edb6040a1c5bccd0e07
-    assemblyName: Mirror.Examples.dll
-    namespaceName: Mirror.Examples.Additive
-    className: SceneLoader
   platform: 5
   scenePathNames:
   - Assets/bomber_scene.unity
-  playerPath: "E:/Dropbox/9-fase/Computa\xE7\xE3o Distribuida/DistBomberMan/Build/DistBomberMan.exe"
+  playerPath: "C:/Users/mur1ll0/Dropbox/9-fase/Computa\xE7\xE3o Distribuida/DistBomberMan/Build/DistBomberMan.exe"
