@@ -32,7 +32,6 @@ ScriptsOnlyBuild:
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
-    - UnityEditor.TestTools.TestRunner.TestListCacheData
   sceneClasses:
     Assets/bomber_scene.unity:
     - Class: 1
@@ -68,21 +67,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9754}
     - Class: 114
+      Script: {instanceID: 9874}
+    - Class: 114
       Script: {instanceID: 9876}
     - Class: 114
-      Script: {instanceID: 9878}
+      Script: {instanceID: 10736}
     - Class: 114
-      Script: {instanceID: 10738}
+      Script: {instanceID: 10842}
     - Class: 114
-      Script: {instanceID: 10844}
+      Script: {instanceID: 11378}
     - Class: 114
-      Script: {instanceID: 11380}
+      Script: {instanceID: 11472}
     - Class: 114
-      Script: {instanceID: 11474}
+      Script: {instanceID: 11552}
     - Class: 114
-      Script: {instanceID: 11554}
-    - Class: 114
-      Script: {instanceID: 11674}
+      Script: {instanceID: 11672}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -731,4 +730,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/bomber_scene.unity
-  playerPath: "C:/Users/mur1ll0/Dropbox/9-fase/Computa\xE7\xE3o Distribuida/DistBomberMan/Build/DistBomberMan.exe"
+  playerPath: "E:/Dropbox/9-fase/Computa\xE7\xE3o Distribuida/DistBomberMan/Build/DistBomberMan.exe"

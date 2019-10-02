@@ -9,6 +9,7 @@ public class movement : NetworkBehaviour
 {
     public GameObject Bomba;
     public GameObject animDie;
+
     private Animator anim;
 
     public int canDeploy = 1;
@@ -22,7 +23,7 @@ public class movement : NetworkBehaviour
 
     //Spawnar bomba
     [Command]
-    void DropBomb()
+    void CmdDropBomb()
     {
         GameObject newBomb = Instantiate(Bomba,
             new Vector2(
@@ -31,6 +32,8 @@ public class movement : NetworkBehaviour
             ),
             Bomba.transform.rotation
         );
+
+        NetworkServer.Spawn(newBomb);
     }
 
 
@@ -68,7 +71,7 @@ public class movement : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Space) && canDeploy == 1)
             {
 
-                DropBomb();
+                CmdDropBomb();
             }
         }
     }
@@ -78,6 +81,7 @@ public class movement : NetworkBehaviour
         if (other.gameObject.tag == "Explosion")
         {
             GameObject die = Instantiate(animDie, transform.position, transform.rotation);
+            NetworkServer.Spawn(die);
             Destroy(die, 0.9f);
             gameObject.SetActive(false);
             Destroy(gameObject, .3f);
